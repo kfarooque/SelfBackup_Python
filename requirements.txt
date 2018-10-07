@@ -1,0 +1,5 @@
+# Python 3.7.0 #
+
+# Packages #
+numpy >= 1.15.1
+pandas >= 0.23.4
