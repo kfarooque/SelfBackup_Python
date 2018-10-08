@@ -7,12 +7,12 @@ Automated simple backup method that copies everything in one selected folder to 
 
 This works best as a frequently-run process that synchronizes a backup folder with one or more source folders. The user can specify specific folders to copy or ignore, a minimum filesize, and whether to ignore hidden files. This does not replace more complex version control like Git.
 
-_**WARNING: THIS USES `rm -rf` COMMANDS OR EQUIVALENTS TO REMOVE FILES FROM THE DESTINATION DIRECTORY. DEFINE THE DESTINATION PATH AS A PATH THAT YOU WOULD BE COMFORTABLE WITH IF IT WERE DELETED AND OVERWRITTEN, AND MAKE SURE YOU DO NOT MIX UP THE HOME AND DESTINATION DIRECTORIES.**_
+_**WARNING: THIS USES COMMANDS THAT REMOVE FILES FROM THE DESTINATION DIRECTORY WITHOUT WARNING. THE DESTINATION PATH MUST BE SEPARATE FROM ANYTHING YOU ARE BACKING UP AND CAN BE DELETED/OVERWRITTEN. MAKE SURE NOT TO MIX UP THE HOME AND DESTINATION PARAMETERS.**_
 
 ### Update Notes
 |Date|Updates|
 |----|-------|
-|2018-10-07|Completed initial version for DOS- and Bash-style commands.
+|2018-10-07|Completed initial Windows/DOS and MacOS/Linux/Bash versions.
 
 ## Contents
 
@@ -22,12 +22,12 @@ _**WARNING: THIS USES `rm -rf` COMMANDS OR EQUIVALENTS TO REMOVE FILES FROM THE 
 * `functions.py` (called by `main.py`) defines all functions.
 
 ### Other Files
+* `requirements.txt` requirements for running process
+* `license.txt` license information
 * `to_include.txt` (user-created, not in repository) lists paths of files/folders in home/source to copy to destination/backup.
 * `to_exclude.txt` (user-created, not in repository) lists paths of files/folders to skip, even if they are in folders included above.
 * `to_force.txt` (user-created, not in repository) lists paths of files/folders to always copy over regardless of parameters.
 * `*.sh` or `*.bat` (user-created, not in repository) can be created by user to more easily run the program from the command line.
-* `requirements.txt` requirements for running process
-* `license.txt` license information
 
 ## Setup
 
@@ -85,7 +85,7 @@ _**WARNING: THIS USES `rm -rf` COMMANDS OR EQUIVALENTS TO REMOVE FILES FROM THE 
     * Other recommendations when defining files and directory names:
         * use only forward-slashes (`/`) instead of backslashes (`\\`) - both will work, but `\\`s can cause escape errors sometimes, and either type is converted to whatever is needed for the operating system
         * do not end directories with a final slash (`/` or `\\`) - this will probably still work but the program is less likely to encounter errors if you do not end parameter definitions with a slash
-3. **OPTIONAL** Create/update a `main.sh` or `main.bat` file to more easily run the python script from the command line (see **Operation** section for how to define the contents of this file to run everything from the command line).
+3. **OPTIONAL** Create/update a `*.sh` (MacOS/Linux) or `*.bat` (Windows) file to more easily run the python script from the command line (see **Operation > Run from Command Line** section for how to define it).
 
 ## Operation
 
@@ -107,7 +107,7 @@ _**WARNING: THIS USES `rm -rf` COMMANDS OR EQUIVALENTS TO REMOVE FILES FROM THE 
         * _**Be careful about how you define this! Anything in this directory can be deleted or overwritten.**_
     * If neither parameter is defined, then the program will use the values defined in `config.py`.
     * Do not use backslashes before quotation marks (e.g., `"C:\"`), since the backslash will escape the quotation mark. Instead, define without the final backslash (e.g., `"C:"`), or use a forward slash (e.g., `"C:/"`).
-3. If you will be running this regularly, then create a `main.sh` (MacOS/Linux) or `main.bat` (Windows) file with the command(s) from Step 2.
+3. If you will be running this regularly, then create a `*.sh` (MacOS/Linux) or `*.bat` (Windows) file with the command(s) from Step 2.
 
 Examples in MacOS or Linux:
 ```bash
