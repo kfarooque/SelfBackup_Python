@@ -8,8 +8,8 @@ import os
 # USER INPUTS #
 
 # default files and paths
-path_home = "C:"
-path_destination = "F:/Tlanelhuatl"
+path_home = None
+path_destination = None
 file_include = "to_include.txt"
 file_exclude = "to_exclude.txt"
 file_force = "to_force.txt"
