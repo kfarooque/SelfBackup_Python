@@ -45,7 +45,7 @@ def standardize_path_names(paths):
     env_homepath = os.getenv("HOMEPATH")
     if env_home is not None:
         home_path = re.sub(r'\\', '/', env_home)
-        paths_fmt = [re.sub(r'^~(?=/)', home_path, path) for path in paths_fmt]
+        paths_fmt = [re.sub(r'^~(?=/|$)', home_path, path) for path in paths_fmt]
     elif env_homedir is not None and env_homepath is not None:
         home_path = re.sub(r'\\', '/', env_homedir + env_homepath)
         paths_fmt = [re.sub(r'^%HOMEPATH%', home_path, path) for path in paths_fmt]
@@ -121,7 +121,14 @@ def list_possible_files(filelist, rootpath_home, rootpath_dest, skip=None, drop_
     filelist_fmt = standardize_path_names(filelist)
     filelist_endings = []
     for item in filelist_fmt:
-        if item.startswith(rootpath_home_fmt):
+        if item.startswith(rootpath_home_fmt) and item.startswith(rootpath_dest_fmt):
+            if len(rootpath_home_fmt) > len(rootpath_dest_fmt):
+                ending = item[len(rootpath_home_fmt):]
+            elif len(rootpath_dest_fmt) > len(rootpath_home_fmt):
+                ending = item[len(rootpath_dest_fmt):]
+            else:
+                ending = None
+        elif item.startswith(rootpath_home_fmt):
             ending = item[len(rootpath_home_fmt):]
         elif item.startswith(rootpath_dest_fmt):
             ending = item[len(rootpath_dest_fmt):]
@@ -315,13 +322,15 @@ def define_forced_details(paths, rootpath_home, rootpath_dest):
     return details
 
 
-def define_directory_commands(details, cmdtype="bash"):
+def define_directory_commands(details, cmdtype="bash", remove_nothing=False, overwrite_anything=False):
     """
     Translate conditions into directory commands (create/delete/overwrite/ignore directory/file).
     Uses functions: standardize_path_names, sort_unique_items
     :param details: dataframe of file details with root paths, file, and flags for home/dest/dir/file/etc.
                     needs fields: root_home, root_dest, ending, is_dir, is_file, in_home, in_dest, is_newer, is_older
     :param cmdtype: string, "dos" for Windows DOS commands, "bash" for MacOS/Linux Bash commands
+    :param remove_nothing: boolean, whether to avoid running any deletion commands for the destination
+    :param overwrite_anything: boolean, whether to overwrite older as well as newer files in the destination
     :return: dictionary with commands ('commands') and multiple diagnostic counts ('count_*').
              'commands' is a list of commands in order: remove file, remove dir, make dir, copy file, overwrite file.
              diagnostic counts include 'count_files', 'count_folders', 'count_older', 'count_newer',
@@ -329,11 +338,20 @@ def define_directory_commands(details, cmdtype="bash"):
     """
     list_input = standardize_path_names(details['root_home'] + details['ending'])
     list_output = standardize_path_names(details['root_dest'] + details['ending'])
-    flag_rmdir = details['is_dir'] & details['in_dest'] & np.logical_not(details['in_home'])
     flag_mkdir = details['is_dir'] & details['in_home'] & np.logical_not(details['in_dest'])
-    flag_rm = details['is_file'] & details['in_dest'] & np.logical_not(details['in_home'])
     flag_cp = details['is_file'] & details['in_home'] & np.logical_not(details['in_dest'])
-    flag_cpover = details['is_file'] & details['in_home'] & details['in_dest'] & details['is_newer']
+    if remove_nothing:
+        flag_rmdir = [False] * details.shape[0]
+        flag_rm = [False] * details.shape[0]
+    else:
+        flag_rmdir = details['is_dir'] & details['in_dest'] & np.logical_not(details['in_home'])
+        flag_rm = details['is_file'] & details['in_dest'] & np.logical_not(details['in_home'])
+    if overwrite_anything:
+        flag_cpover = details['is_file'] & details['in_home'] & details['in_dest'] \
+                      & details['is_newer']
+    else:
+        flag_cpover = details['is_file'] & details['in_home'] & details['in_dest'] \
+                      & np.logical_or(details['is_newer'], details['is_older'])
     if cmdtype == "bash":
         list_input_bash = pd.Series(list_input)
         list_output_bash = pd.Series(list_output)
@@ -436,7 +454,7 @@ def run_directory_commands(commands, cmdtype="bash", tmpfile="~temp_backup",
         os.system("chmod 777 " + cmdfile)
         if not skip_execution:
             if wait_to_run:
-                os.system("pause")
+                os.system("read -rsp $'Press enter to continue...\n'")
             os.system("bash " + cmdfile)
         if not keep_script:
             os.system("rm " + cmdfile)

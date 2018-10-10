@@ -29,7 +29,9 @@ details_dest = f.build_directory_details(list(files_all.loc[files_all['in_dest']
 
 details_all = f.join_directory_details(details_home, details_dest)
 details_forced = f.define_forced_details(list_always_copy, c.path_home, c.path_destination)
-commands_all = f.define_directory_commands(details_all.append(details_forced).reset_index(), cmdtype=c.cmdtype)
+commands_all = f.define_directory_commands(details_all.append(details_forced).reset_index(), cmdtype=c.cmdtype,
+                                           remove_nothing=c.prevent_file_removal,
+                                           overwrite_anything=c.overwrite_older_and_newer)
 commands_checks = f.check_directory_commands(commands_all)
 print('\n'.join(commands_checks['message']))
 

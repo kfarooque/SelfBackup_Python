@@ -78,7 +78,9 @@ _**WARNING: THIS USES COMMANDS THAT REMOVE FILES FROM THE DESTINATION DIRECTORY 
     * `file_exclude` = file with directories to exclude (usually `"to_exclude.txt"`)
     * `file_force` = file with directories to always copy (usually `"to_force.txt"`)
     * `filesize_limit_bytes` = filesize limit, files over this size will be ignored (e.g., 10GB would be `10 * (1024 ** 3)`)
-    * `keep_hidden_files` = whether to keep hidden files
+    * `copy_hidden_files` = whether to copy hidden files with everything else
+    * `prevent_file_removal` = whether to block commands that remove files/folders from destination
+    * `overwrite_older_and_newer` = whether to overwrite older and newer (instead of just older) files in destination
     * `stop_if_warned` = whether to stop process if it detects possible mistakes
     * `pause_for_confirmation` = whether to pause for confirmation before running commands
     * `create_executable_only` = whether to create an executable instead of running commands
