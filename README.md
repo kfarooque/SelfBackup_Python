@@ -82,12 +82,12 @@ _**WARNING: THIS USES COMMANDS THAT REMOVE FILES FROM THE DESTINATION DIRECTORY 
     * `prevent_file_removal` = whether to block commands that remove files/folders from destination
     * `overwrite_older_and_newer` = whether to overwrite older and newer (instead of just older) files in destination
     * `stop_if_warned` = whether to stop process if it detects possible mistakes
-    * `pause_for_confirmation` = whether to pause for confirmation before running commands
+    * `pause_for_confirmation` = whether to pause for confirmation before running commands (command-line only)
     * `create_executable_only` = whether to create an executable instead of running commands
-    * Other recommendations when defining files and directory names:
+    * Recommendations when defining files and directory names:
         * use only forward-slashes (`/`) instead of backslashes (`\\`) - both will work, but `\\`s can cause escape errors sometimes, and either type is converted to whatever is needed for the operating system
         * do not end directories with a final slash (`/` or `\\`) - this will probably still work but the program is less likely to encounter errors if you do not end parameter definitions with a slash
-3. **OPTIONAL** Create/update a `*.sh` (MacOS/Linux) or `*.bat` (Windows) file to more easily run the python script from the command line (see **Operation > Run from Command Line** section for how to define it).
+3. **OPTIONAL:** Create/update a `*.sh` (MacOS/Linux) or `*.bat` (Windows) file to more easily run the python script from the command line (see **Operation > Run from Command Line** section for how to define it).
 
 ## Operation
 
