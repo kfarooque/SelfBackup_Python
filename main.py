@@ -28,8 +28,11 @@ details_dest = f.build_directory_details(list(files_all.loc[files_all['in_dest']
 # DEFINE ACTIONS
 
 details_all = f.join_directory_details(details_home, details_dest)
-details_forced = f.define_forced_details(list_always_copy, c.path_home, c.path_destination)
-commands_all = f.define_directory_commands(details_all.append(details_forced).reset_index(), cmdtype=c.cmdtype,
+if len(list_always_copy) > 0:
+    details_forced = f.define_forced_details(list_always_copy, c.path_home, c.path_destination)
+    if details_forced.shape[0] > 0:
+        details_all = details_all.append(details_forced).reset_index()
+commands_all = f.define_directory_commands(details_all, cmdtype=c.cmdtype,
                                            remove_nothing=c.prevent_file_removal,
                                            overwrite_anything=c.overwrite_older_and_newer)
 commands_checks = f.check_directory_commands(commands_all)

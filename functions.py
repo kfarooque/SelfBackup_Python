@@ -348,10 +348,10 @@ def define_directory_commands(details, cmdtype="bash", remove_nothing=False, ove
         flag_rm = details['is_file'] & details['in_dest'] & np.logical_not(details['in_home'])
     if overwrite_anything:
         flag_cpover = details['is_file'] & details['in_home'] & details['in_dest'] \
-                      & details['is_newer']
+                      & np.logical_or(details['is_newer'], details['is_older'])
     else:
         flag_cpover = details['is_file'] & details['in_home'] & details['in_dest'] \
-                      & np.logical_or(details['is_newer'], details['is_older'])
+                      & details['is_newer']
     if cmdtype == "bash":
         list_input_bash = pd.Series(list_input)
         list_output_bash = pd.Series(list_output)
